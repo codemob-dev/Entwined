@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using Steamworks;
+using Steamworks.Data;
+using System;
+using System.Text;
 
 namespace Entwined.Tests
 {
@@ -11,17 +14,17 @@ namespace Entwined.Tests
 
             packetType.OnMessage += PacketType_OnMessage;
 
-            EntwinedUtilities.SteamManagerLoaded += EntwinedUtilities_SteamManagerLoaded;
+            SteamMatchmaking.OnLobbyMemberJoined += LobbyMemberJoined;
+        }
+
+        private static void LobbyMemberJoined(Lobby lobby, Friend friend)
+        {
+            packetType.SendMessage(Encoding.ASCII.GetBytes("Hello World!"));
         }
 
         private static void PacketType_OnMessage(byte[] payload)
         {
             Entwined.StaticLogger.LogInfo(Encoding.ASCII.GetString(payload));
-        }
-
-        private static void EntwinedUtilities_SteamManagerLoaded()
-        {
-            packetType.SendMessage(Encoding.ASCII.GetBytes("Hello World!"));
         }
     }
 }
