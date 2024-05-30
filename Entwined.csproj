@@ -430,7 +430,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entwined.cs" />
+    <Compile Include="IdentifierSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PublicPacketSystem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
