@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using System.Text;
 
 namespace Entwined
 {
@@ -19,6 +20,19 @@ namespace Entwined
     public class PacketType
     {
         internal PacketIdentifier packetIdentifier;
+
+        /// <summary>
+        /// Run in your awake function.
+        /// Creates a new PacketType to transmit and receive data.
+        /// <example>
+        /// <code>
+        /// void Awake() {
+        ///     var packetType = new PacketType(this);
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <param name="plugin">Your current plugin. </param>
         public PacketType(BaseUnityPlugin plugin)
         {
             packetIdentifier = IdentifierRegister.GenerateNewPacketIdentifier(plugin);
@@ -26,7 +40,7 @@ namespace Entwined
         }
 
         /// <summary>
-        /// Fired when the packet receives data.
+        /// Fired when the packet receives data. (A client ran <c>packetType.SendMessage</c>)
         /// </summary>
         public event PacketReceiveEvent OnMessage;
 
@@ -35,6 +49,10 @@ namespace Entwined
             OnMessage.Invoke(payload);
         }
 
+        /// <summary>
+        /// Send data to all clients
+        /// </summary>
+        /// <param name="payload">The data to send</param>
         public void SendMessage(byte[] payload)
         {
             Entwined.SendMessage(packetIdentifier, payload);
