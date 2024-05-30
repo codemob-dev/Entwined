@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using System.Text;
 
 namespace Entwined
 {
@@ -56,6 +55,33 @@ namespace Entwined
         public void SendMessage(byte[] payload)
         {
             Entwined.SendMessage(packetIdentifier, payload);
+        }
+    }
+
+    /// <summary>
+    /// Fires when <c>SteamManager</c> loads.
+    /// </summary>
+    public delegate void SteamManagerLoadEvent();
+
+    /// <summary>
+    /// A static utility class for operations related to Entwined.
+    /// </summary>
+    public static class EntwinedUtilities
+    {
+
+        internal static bool loaded = false;
+
+        /// <summary>
+        /// Fires when <c>SteamManager</c> loads.
+        /// </summary>
+        public static event SteamManagerLoadEvent SteamManagerLoaded;
+        internal static void SteamManager_Awake()
+        {
+            if (!loaded)
+            {
+                loaded = true;
+                SteamManagerLoaded.Invoke();
+            }
         }
     }
 }

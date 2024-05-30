@@ -42,21 +42,23 @@ namespace Entwined
 
             harmony.PatchAll(); // Patch the entire assembly
 
-            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+            // Patch the SteamManager.Awake function to run after it gets initialized
+            var func = AccessTools.Method(typeof(SteamManager), "Awake");
+            var patch = AccessTools.Method(
+                typeof(EntwinedUtilities), 
+                nameof(EntwinedUtilities.SteamManager_Awake));
+
+            harmony.Patch(func, postfix: new HarmonyMethod(patch));
+
+            EntwinedUtilities.SteamManagerLoaded += SteamManagerLoaded;
         }
 
-        
-        internal static bool loadedFirstScene = false;
         /// <summary>
-        /// Runs on scene load. The first scene loads after all of the mods have loaded.
+        /// Runs when the <c>SteamManager</c> loads (after all other mods have loaded).
         /// </summary>
-        private static void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
+        private void SteamManagerLoaded()
         {
-            if (!loadedFirstScene)
-            {
-                loadedFirstScene = true;
-                IdentifierRegister.GeneratePacketIdentifierIDs();
-            }
+            IdentifierRegister.GeneratePacketIdentifierIDs();
         }
 
 
@@ -99,7 +101,7 @@ namespace Entwined
 
             var deconstructedPacket = DeconstructedPacket.DeconstructPacket(rawPacketBuffer);
 
-            deconstructedPacket.PacketIdentifier.PacketType.
+            deconstructedPacket.PacketIdentifier.PacketType.ReceiveMessage(deconstructedPacket.Payload);
 
             return false;
         }
