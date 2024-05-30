@@ -433,6 +433,7 @@
     <Compile Include="IdentifierSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublicPacketSystem.cs" />
+    <Compile Include="MainTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

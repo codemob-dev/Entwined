@@ -1,11 +1,12 @@
 ﻿using BepInEx;
+using BepInEx.Logging;
+using Entwined.Tests;
 using HarmonyLib;
 using Steamworks;
 using Steamworks.Data;
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-using UnityEngine.SceneManagement;
 
 namespace Entwined
 {
@@ -20,11 +21,12 @@ namespace Entwined
         internal static Harmony harmony;
         internal static Entwined instance;
 
+        internal static ManualLogSource StaticLogger => instance.Logger;
 
         /// <summary>
         /// The signature to help avoid clashes with built-in packets. Can be any length.
         /// </summary>
-        public static readonly byte[] signature = new byte[]
+        internal static readonly byte[] signature = new byte[]
         {
             0b11101110,
             0b10011011,
@@ -51,6 +53,9 @@ namespace Entwined
             harmony.Patch(func, postfix: new HarmonyMethod(patch));
 
             EntwinedUtilities.SteamManagerLoaded += SteamManagerLoaded;
+
+            // Comment this out during production
+            MainTest.Run();
         }
 
         /// <summary>
