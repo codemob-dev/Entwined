@@ -37,7 +37,7 @@ namespace Entwined
 
         public void SendMessage(byte[] payload)
         {
-
+            Entwined.SendMessage(packetIdentifier, payload);
         }
     }
 }

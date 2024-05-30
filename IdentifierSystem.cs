@@ -74,6 +74,9 @@ namespace Entwined
 
     internal static class IdentifierRegister
     {
+        /// <summary>
+        /// Sorts the plugins using <c>PluginSorter</c>
+        /// </summary>
         internal static SortedList<BaseUnityPlugin, List<PacketIdentifier>> PluginPacketPairs = 
             new SortedList<BaseUnityPlugin, List<PacketIdentifier>>(new PluginSorter());
 
@@ -97,6 +100,9 @@ namespace Entwined
             return identifier;
         }
 
+        /// <summary>
+        /// Sets up all of the packet identifiers to use the appropriate IDs
+        /// </summary>
         internal static void GeneratePacketIdentifierIDs()
         {
             ushort pluginId = 0;

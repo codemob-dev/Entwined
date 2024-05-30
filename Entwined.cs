@@ -124,6 +124,19 @@ namespace Entwined
             return false; // The packet does not have the signature
         }
 
+        internal static void SendMessage(PacketIdentifier identifier, byte[] payload)
+        {
+            var msg = new byte[signature.Length + PacketIdentifier.EncodedSize + payload.Length];
+            signature.CopyTo(msg, 0);
+            identifier.Encode().CopyTo(msg, signature.Length);
+            payload.CopyTo(msg, signature.Length + PacketIdentifier.EncodedSize);
+
+            foreach (var player in SteamManager.instance.connectedPlayers)
+            {
+                player.Connection.SendMessage(msg);
+            }
+        }
+
         internal struct DeconstructedPacket
         {
             public byte[] Payload { get; set; }
