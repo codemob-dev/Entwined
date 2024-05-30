@@ -20,6 +20,7 @@ namespace Entwined.Tests
         private static void LobbyMemberJoined(Lobby lobby, Friend friend)
         {
             packetType.SendMessage(Encoding.ASCII.GetBytes("Hello World!"));
+            Entwined.StaticLogger.LogInfo("Sent message!");
         }
 
         private static void PacketType_OnMessage(byte[] payload)
