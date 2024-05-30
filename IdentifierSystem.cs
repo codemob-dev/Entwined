@@ -17,6 +17,7 @@ namespace Entwined
         /// </summary>
         public bool IsLoaded => PluginId != ushort.MaxValue || PacketId != ushort.MaxValue;
 
+        public PacketType PacketType { get; set; }
 
         public static ushort EncodedSize => 4;
 

@@ -97,7 +97,9 @@ namespace Entwined
                 return false;
             }
 
-            // TODO: make the actual advanced code part
+            var deconstructedPacket = DeconstructedPacket.DeconstructPacket(rawPacketBuffer);
+
+            deconstructedPacket.PacketIdentifier.PacketType.
 
             return false;
         }
@@ -120,6 +122,25 @@ namespace Entwined
                 return true; // The packet has the signature
             }
             return false; // The packet does not have the signature
+        }
+
+        internal struct DeconstructedPacket
+        {
+            public byte[] Payload { get; set; }
+            public PacketIdentifier PacketIdentifier { get; set; }
+
+            public static DeconstructedPacket DeconstructPacket(byte[] packet)
+            {
+                return new DeconstructedPacket
+                {
+                    PacketIdentifier = IdentifierRegister.GetPacketIdentifier(
+                        packet.Skip(signature.Length) // Skip the signature
+                        .Take(PacketIdentifier.EncodedSize).ToArray() // Grab only the data needed
+                        ),
+                    // Grab the data after the signature and identifier
+                    Payload = packet.Skip(signature.Length + PacketIdentifier.EncodedSize).ToArray()
+                };
+            }
         }
     }
 }
