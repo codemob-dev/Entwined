@@ -5,26 +5,26 @@ namespace Entwined.Tests
 {
     internal class MainTest : MonoBehaviour
     {
-        static PacketChannel helloWorldPacket;
+        static EntwinedPacketChannel<string> helloWorldChannel;
         private void Awake()
         {
-            helloWorldPacket = new PacketChannel(Entwined.instance);
+            helloWorldChannel = new EntwinedPacketChannel<string>(Entwined.instance, new StringEntwiner());
 
-            helloWorldPacket.OnMessage += PacketType_OnMessage;
+            helloWorldChannel.OnMessage += OnMessage;
         }
 
         private void OnGUI()
         {
             if (GUI.Button(new Rect(15, 120, 100, 40), "Run Test"))
             {
-                helloWorldPacket.SendMessage(Encoding.ASCII.GetBytes("Hello World!"));
+                helloWorldChannel.SendMessage("Hello World!");
                 Entwined.StaticLogger.LogInfo("Sent message!");
             }
         }
 
-        private static void PacketType_OnMessage(byte[] payload)
+        private static void OnMessage(string payload)
         {
-            Entwined.StaticLogger.LogInfo(Encoding.ASCII.GetString(payload));
+            Entwined.StaticLogger.LogInfo(payload);
         }
     }
 }
