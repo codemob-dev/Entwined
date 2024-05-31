@@ -39,7 +39,7 @@ Next up is:
 static EntwinedPacketChannel<string> helloWorldChannel;
 private void Awake()
 {
-    helloWorldChannel = new EntwinedPacketChannel<string>(Entwined.instance, new StringEntwiner());
+    helloWorldChannel = new EntwinedPacketChannel<string>(this, new StringEntwiner());
 
     helloWorldChannel.OnMessage += OnMessage;
 }
