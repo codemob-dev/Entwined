@@ -114,6 +114,10 @@ namespace Entwined
 
             var deconstructedPacket = DeconstructedPacket.DeconstructPacket(rawPacketBuffer);
 
+            if (deconstructedPacket.PacketIdentifier == null)
+            {
+                StaticLogger.LogInfo("Received invalid packet identifier!");
+            }
             deconstructedPacket.PacketIdentifier.PacketType.ReceiveMessage(deconstructedPacket.Payload);
 
             return false;
@@ -134,10 +138,8 @@ namespace Entwined
             var packetSignature = packet.Take(signature.Length).ToArray();
             if (packetSignature.SequenceEqual(signature))
             {
-                StaticLogger.LogInfo($"Received valid packet {packet.ToFormattedString()}!");
                 return true; // The packet has the signature
             }
-            StaticLogger.LogInfo($"Received message {packet.ToFormattedString()}, but it signature, {packetSignature.ToFormattedString()}, is invalid. Expected the signature {signature.ToFormattedString()}.");
             return false; // The packet does not have the signature
         }
 
@@ -155,7 +157,6 @@ namespace Entwined
 
             foreach (var player in SteamManager.instance.connectedPlayers)
             {
-                StaticLogger.LogInfo($"Sending message {msg.ToFormattedString()} to {player.steamName}");
                 player.Connection.SendMessage(msg);
             }
         }

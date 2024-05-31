@@ -11,13 +11,13 @@ namespace Entwined
 
     /// <summary>
     /// The simplest component in Entwined. 
-    /// <c>PacketType</c> represents a self-contained 
+    /// <c>PacketChannel</c> represents a self-contained 
     /// type of packet that can broadcast and receive data.
     /// 
-    /// Note that different <c>PacketType</c>s cannot interact, 
+    /// Note that different <c>PacketChannel</c>s cannot interact, 
     /// each functions as its own message channel.
     /// </summary>
-    public class PacketType
+    public class PacketChannel
     {
         internal PacketIdentifier packetIdentifier;
 
@@ -32,8 +32,8 @@ namespace Entwined
         /// </code>
         /// </example>
         /// </summary>
-        /// <param name="plugin">Your current plugin. </param>
-        public PacketType(BaseUnityPlugin plugin)
+        /// <param name="plugin">Your current plugin.</param>
+        public PacketChannel(BaseUnityPlugin plugin)
         {
             packetIdentifier = IdentifierRegister.GenerateNewPacketIdentifier(plugin);
             packetIdentifier.PacketType = this;
@@ -46,7 +46,6 @@ namespace Entwined
 
         internal void ReceiveMessage(byte[] payload)
         {
-            Entwined.StaticLogger.LogInfo($"Received message payload {payload.ToFormattedString()}, invoking handler(s)!");
             OnMessage.Invoke(payload);
         }
 

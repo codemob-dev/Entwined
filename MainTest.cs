@@ -8,10 +8,10 @@ namespace Entwined.Tests
 {
     internal class MainTest : MonoBehaviour
     {
-        static PacketType helloWorldPacket;
+        static PacketChannel helloWorldPacket;
         private void Awake()
         {
-            helloWorldPacket = new PacketType(Entwined.instance);
+            helloWorldPacket = new PacketChannel(Entwined.instance);
 
             helloWorldPacket.OnMessage += PacketType_OnMessage;
         }

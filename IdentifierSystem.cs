@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Entwined
 {
@@ -17,7 +18,7 @@ namespace Entwined
         /// </summary>
         public bool IsLoaded => PluginId != ushort.MaxValue || PacketId != ushort.MaxValue;
 
-        public PacketType PacketType { get; set; }
+        public PacketChannel PacketType { get; set; }
 
         public static int EncodedSize => 4;
 
@@ -56,7 +57,12 @@ namespace Entwined
         /// <returns></returns>
         public bool Matches(byte[] bytes)
         {
-            return Encode() == bytes;
+            return Encode().SequenceEqual(bytes);
+        }
+
+        public override string ToString()
+        {
+            return $"{PluginId};{PacketId}";
         }
     }
 
