@@ -9,26 +9,25 @@ Instead of a big text wall on how everything works, there will be an example Hel
 [BepInPlugin("com.yourname.myFirstEntwinedPlugin", "My First Entwined Plugin", 1.0.0)]
 internal class MyPlugin : MonoBehaviour
 {
-    static PacketChannel helloWorldChannel;
+    static EntwinedPacketChannel<string> helloWorldChannel;
     private void Awake()
     {
-        helloWorldChannel = new PacketChannel(this);
+        helloWorldChannel = new EntwinedPacketChannel<string>(Entwined.instance, new StringEntwiner());
 
-        helloWorldChannel.OnMessage += PacketType_OnMessage;
+        helloWorldChannel.OnMessage += OnMessage;
     }
 
     private void OnGUI()
     {
         if (GUI.Button(new Rect(15, 120, 100, 40), "Send Packet"))
         {
-            helloWorldPacket.SendMessage(Encoding.ASCII.GetBytes("Hello World!"));
-            Logger.LogInfo("Sent message!");
+            helloWorldChannel.SendMessage("Hello World!");
         }
     }
 
-    private static void PacketType_OnMessage(byte[] payload)
+    private static void OnMessage(string payload)
     {
-        Logger.LogInfo(Encoding.ASCII.GetString(payload));
+        Logger.LogInfo(payload);
     }
 }
 ```
@@ -37,27 +36,26 @@ The first line, `[BepInDependency("com.entwinedteam.entwined")]`, ensures that y
 
 Next up is:
 ```c#
-static PacketChannel helloWorldChannel;
+static EntwinedPacketChannel<string> helloWorldChannel;
 private void Awake()
 {
-    helloWorldChannel = new PacketChannel(this);
+    helloWorldChannel = new EntwinedPacketChannel<string>(Entwined.instance, new StringEntwiner());
 
-    helloWorldChannel.OnMessage += PacketType_OnMessage;
+    helloWorldChannel.OnMessage += OnMessage;
 }
 ```
-This creates a new isolated channel and adds the function `PacketType_OnMessage`. This function is run whenever a client broadcasts a packet on your channel.
+This creates a new isolated channel that automatically encodes and decodes strings and adds the function `OnMessage`. This function is run whenever a client broadcasts a packet on the channel.
 
 ```c#
-private static void PacketType_OnMessage(byte[] payload)
+private static void OnMessage(string payload)
 {
-    Logger.LogInfo(Encoding.ASCII.GetString(payload));
+    Logger.LogInfo(payload);
 }
 ```
-The function decodes the payload of the packet to a string and logs it to the console.
+Because we passed `StringEntwiner` to our channel we do not need to decode a byte array, and can easily log the string to the console.
 
 `OnGUI` creates a button and runs the following code when it is pressed:
 ```c#
-helloWorldPacket.SendMessage(Encoding.ASCII.GetBytes("Hello World!"));
-Logger.LogInfo("Sent message!");
+helloWorldChannel.SendMessage("Hello World!");
 ```
-This converts the string to a byte array and broadcasts it to all connected clients.
+This automatically encodes the string and broadcasts it to all of the connected clients.
