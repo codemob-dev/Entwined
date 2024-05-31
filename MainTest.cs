@@ -2,25 +2,27 @@
 using Steamworks.Data;
 using System;
 using System.Text;
+using UnityEngine;
 
 namespace Entwined.Tests
 {
-    internal static class MainTest
+    internal class MainTest : MonoBehaviour
     {
-        static PacketType packetType;
-        public static void Run()
+        static PacketType helloWorldPacket;
+        private void Awake()
         {
-            packetType = new PacketType(Entwined.instance);
+            helloWorldPacket = new PacketType(Entwined.instance);
 
-            packetType.OnMessage += PacketType_OnMessage;
-
-            SteamMatchmaking.OnLobbyMemberJoined += LobbyMemberJoined;
+            helloWorldPacket.OnMessage += PacketType_OnMessage;
         }
 
-        private static void LobbyMemberJoined(Lobby lobby, Friend friend)
+        private void OnGUI()
         {
-            packetType.SendMessage(Encoding.ASCII.GetBytes("Hello World!"));
-            Entwined.StaticLogger.LogInfo("Sent message!");
+            if (GUI.Button(new Rect(15, 120, 100, 40), "Run Test"))
+            {
+                helloWorldPacket.SendMessage(Encoding.ASCII.GetBytes("Hello World!"));
+                Entwined.StaticLogger.LogInfo("Sent message!");
+            }
         }
 
         private static void PacketType_OnMessage(byte[] payload)

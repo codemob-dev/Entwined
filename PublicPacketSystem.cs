@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using System.Collections.Generic;
 
 namespace Entwined
 {
@@ -45,6 +46,7 @@ namespace Entwined
 
         internal void ReceiveMessage(byte[] payload)
         {
+            Entwined.StaticLogger.LogInfo($"Received message payload {payload.ToFormattedString()}, invoking handler(s)!");
             OnMessage.Invoke(payload);
         }
 
@@ -82,6 +84,16 @@ namespace Entwined
                 loaded = true;
                 SteamManagerLoaded.Invoke();
             }
+        }
+
+        /// <summary>
+        /// Converts an IEnumerable to a formatted string
+        /// </summary>
+        /// <param name="enumerable">The IEnumerable to convert</param>
+        /// <returns>The formatted string</returns>
+        public static string ToFormattedString<T>(this IEnumerable<T> enumerable)
+        {
+            return $"{{ {string.Join(", ", enumerable)} }}";
         }
     }
 }

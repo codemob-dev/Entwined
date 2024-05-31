@@ -19,7 +19,7 @@ namespace Entwined
 
         public PacketType PacketType { get; set; }
 
-        public static ushort EncodedSize => 4;
+        public static int EncodedSize => 4;
 
         /// <summary>
         /// Encode to a byte array
@@ -89,14 +89,13 @@ namespace Entwined
         /// <returns>The packet identitier</returns>
         internal static PacketIdentifier GenerateNewPacketIdentifier(BaseUnityPlugin plugin)
         {
+            Entwined.StaticLogger.LogInfo($"Generating new PacketIdentifier for {plugin.Info.Metadata.GUID}!");
             var identifier = new PacketIdentifier { };
-            if (PluginPacketPairs.ContainsKey(plugin))
-            {
-                PluginPacketPairs[plugin].Add(identifier);
-            } else
+            if (!PluginPacketPairs.ContainsKey(plugin))
             {
                 PluginPacketPairs.Add(plugin, new List<PacketIdentifier>());
             }
+            PluginPacketPairs[plugin].Add(identifier);
             return identifier;
         }
 
@@ -111,12 +110,15 @@ namespace Entwined
                 var plugin = pluginPackets.Key;
                 var identifiers = pluginPackets.Value;
 
+                Entwined.StaticLogger.LogInfo($"Found plugin {plugin.Info.Metadata.GUID} with {identifiers.Count} packet(s)!");
+
                 for (ushort packetId = 0; packetId < identifiers.Count; packetId++)
                 {
                     var identifier = identifiers[packetId];
                     identifier.PluginId = pluginId;
                     identifier.PacketId = packetId;
 
+                    Entwined.StaticLogger.LogInfo($"Generating ID set {pluginId};{packetId}!");
                     packetIdentifiers.Add(identifier);
                 }
 

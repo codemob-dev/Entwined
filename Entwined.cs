@@ -6,7 +6,9 @@ using Steamworks;
 using Steamworks.Data;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using UnityEngine;
 
 namespace Entwined
 {
@@ -42,7 +44,7 @@ namespace Entwined
             instance = this;
             harmony = new Harmony(Info.Metadata.GUID);
 
-            harmony.PatchAll(); // Patch the entire assembly
+            harmony.PatchAll(Assembly.GetExecutingAssembly()); // Patch the entire assembly
 
             // Patch the SteamManager.Awake function to run after it gets initialized
             var func = AccessTools.Method(typeof(SteamManager), "Awake");
@@ -52,10 +54,17 @@ namespace Entwined
 
             harmony.Patch(func, postfix: new HarmonyMethod(patch));
 
+            // Patch SteamSocket.OnMessage
+            func = AccessTools.Method(typeof(SteamSocket), nameof(SteamSocket.OnMessage));
+            patch = AccessTools.Method(typeof(Entwined), nameof(SteamSocket_OnMessage));
+
+            harmony.Patch(func, prefix: new HarmonyMethod(patch));
+
             EntwinedUtilities.SteamManagerLoaded += SteamManagerLoaded;
 
             // Comment this out during production
-            MainTest.Run();
+            var mainTest = new GameObject("EntwinedMainTest", typeof(MainTest));
+            DontDestroyOnLoad(mainTest);
         }
 
         /// <summary>
@@ -63,6 +72,7 @@ namespace Entwined
         /// </summary>
         private void SteamManagerLoaded()
         {
+            StaticLogger.LogInfo($"Generating PacketIdentifierIDs!");
             IdentifierRegister.GeneratePacketIdentifierIDs();
         }
 
@@ -74,8 +84,6 @@ namespace Entwined
         /// </summary>
         /// <returns><c>true</c> to allow the original method to execute and 
         /// <c>false</c> to prevent it from executing.</returns>
-        [HarmonyPatch(typeof(SteamSocket), nameof(SteamSocket.OnMessage))]
-        [HarmonyPrefix]
         private static bool SteamSocket_OnMessage(
             SteamSocket __instance, Connection connection,
             NetIdentity identity, IntPtr data, int size,
@@ -124,13 +132,20 @@ namespace Entwined
                 return false; // The packet is too small to be a custom packet
             }
             var packetSignature = packet.Take(signature.Length).ToArray();
-            if (packetSignature == signature)
+            if (packetSignature.SequenceEqual(signature))
             {
+                StaticLogger.LogInfo($"Received valid packet {packet.ToFormattedString()}!");
                 return true; // The packet has the signature
             }
+            StaticLogger.LogInfo($"Received message {packet.ToFormattedString()}, but it signature, {packetSignature.ToFormattedString()}, is invalid. Expected the signature {signature.ToFormattedString()}.");
             return false; // The packet does not have the signature
         }
 
+        /// <summary>
+        /// Broadcasts a message to all players
+        /// </summary>
+        /// <param name="identifier">The PacketIdentifier</param>
+        /// <param name="payload">The payload</param>
         internal static void SendMessage(PacketIdentifier identifier, byte[] payload)
         {
             var msg = new byte[signature.Length + PacketIdentifier.EncodedSize + payload.Length];
@@ -140,6 +155,7 @@ namespace Entwined
 
             foreach (var player in SteamManager.instance.connectedPlayers)
             {
+                StaticLogger.LogInfo($"Sending message {msg.ToFormattedString()} to {player.steamName}");
                 player.Connection.SendMessage(msg);
             }
         }
