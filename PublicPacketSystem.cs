@@ -22,11 +22,11 @@ namespace Entwined
 
         /// <summary>
         /// Run in your awake function.
-        /// Creates a new PacketType to transmit and receive data.
+        /// Creates a new <c>PacketChannel</c> to transmit and receive data.
         /// <example>
         /// <code>
         /// void Awake() {
-        ///     var packetType = new PacketType(this);
+        ///     var packetChannel = new PacketChannel(this);
         /// }
         /// </code>
         /// </example>
