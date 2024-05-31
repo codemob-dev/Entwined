@@ -33,7 +33,7 @@ internal class MyPlugin : MonoBehaviour
 }
 ```
 
-The first line, `[BepInDependency("com.entwinedteam.entwined")]`, ensures that your plugin will only load if the user has installed Entwine.
+The first line, `[BepInDependency("com.entwinedteam.entwined")]`, ensures that your plugin will load after Entwined.
 
 Next up is:
 ```c#
