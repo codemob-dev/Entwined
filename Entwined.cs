@@ -118,6 +118,7 @@ namespace Entwined
             if (deconstructedPacket.PacketIdentifier == null)
             {
                 StaticLogger.LogInfo("Received invalid packet identifier!");
+                return true;
             }
 
             var packetSourceInfo = new PacketSourceInfo(identity, connection, __instance, friend);
