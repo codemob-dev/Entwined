@@ -6,7 +6,8 @@ namespace Entwined
     /// An event fired when a packet received data.
     /// </summary>
     /// <param name="payload">The data received</param>
-    public delegate void PacketReceiveEvent<T>(T payload);
+    /// <param name="sourceInfo">Information about the sender of the packet</param>
+    public delegate void PacketReceiveEvent<T>(T payload, PacketSourceInfo sourceInfo);
 
     /// <summary>
     /// The simplest component in Entwined. 
@@ -21,7 +22,7 @@ namespace Entwined
         internal PacketIdentifier packetIdentifier;
 
         /// <summary>
-        /// Run in your awake function.
+        /// Should only be run in your plugin's Awake function
         /// Creates a new <c>PacketChannel</c> to transmit and receive data.
         /// <example>
         /// <code>
@@ -43,9 +44,9 @@ namespace Entwined
         /// </summary>
         public event PacketReceiveEvent<byte[]> OnMessage;
 
-        internal void ReceiveMessage(byte[] payload)
+        internal void ReceiveMessage(byte[] payload, PacketSourceInfo sourceInfo)
         {
-            OnMessage.Invoke(payload);
+            OnMessage.Invoke(payload, sourceInfo);
         }
 
         /// <summary>
@@ -57,6 +58,11 @@ namespace Entwined
             Entwined.SendMessage(packetIdentifier, payload);
         }
     }
+
+    /// <summary>
+    /// A <c>PacketChannel</c> with a built-in entwiner.
+    /// </summary>
+    /// <typeparam name="T">The entwiner type</typeparam>
     public class EntwinedPacketChannel<T>
     {
         public PacketChannel PacketChannel { get; private set; }
@@ -73,8 +79,9 @@ namespace Entwined
             Init(packetChannel, entwiner);
         }
         /// <summary>
+        /// Should only be run in your plugin's Awake function.
         /// Creates a new <c>PacketChannel</c> and <c>EntwinedPacketChannel</c> from the 
-        /// given plugin and <c>IEntwiner</c>
+        /// given plugin and <c>IEntwiner</c>. 
         /// </summary>
         /// <param name="plugin">The plugin</param>
         /// <param name="entwiner">The entwiner</param>
@@ -94,9 +101,9 @@ namespace Entwined
         /// </summary>
         public event PacketReceiveEvent<T> OnMessage;
 
-        internal void ReceiveMessage(byte[] payload)
+        internal void ReceiveMessage(byte[] payload, PacketSourceInfo sourceInfo)
         {
-            OnMessage.Invoke(Entwiner.Detwine(payload));
+            OnMessage.Invoke(Entwiner.Detwine(payload), sourceInfo);
         }
 
         /// <summary>

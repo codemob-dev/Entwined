@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Entwined.Tests
 {
@@ -9,7 +10,7 @@ namespace Entwined.Tests
         private void Awake()
         {
             helloWorldChannel = new EntwinedPacketChannel<string>(Entwined.instance, new StringEntwiner());
-
+            
             helloWorldChannel.OnMessage += OnMessage;
         }
 
@@ -22,9 +23,9 @@ namespace Entwined.Tests
             }
         }
 
-        private static void OnMessage(string payload)
+        private static void OnMessage(string payload, PacketSourceInfo sourceInfo)
         {
-            Entwined.StaticLogger.LogInfo(payload);
+            Entwined.StaticLogger.LogInfo($"{sourceInfo.SteamName}: {payload}");
         }
     }
 }

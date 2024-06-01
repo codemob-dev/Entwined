@@ -119,7 +119,10 @@ namespace Entwined
             {
                 StaticLogger.LogInfo("Received invalid packet identifier!");
             }
-            deconstructedPacket.PacketIdentifier.PacketType.ReceiveMessage(deconstructedPacket.Payload);
+
+            var packetSourceInfo = new PacketSourceInfo(identity, connection, __instance, friend);
+
+            deconstructedPacket.PacketIdentifier.PacketType.ReceiveMessage(deconstructedPacket.Payload, packetSourceInfo);
 
             return false;
         }
@@ -162,7 +165,7 @@ namespace Entwined
             }
         }
 
-        internal struct DeconstructedPacket
+        internal class DeconstructedPacket
         {
             public byte[] Payload { get; set; }
             public PacketIdentifier PacketIdentifier { get; set; }
@@ -179,6 +182,66 @@ namespace Entwined
                     Payload = packet.Skip(signature.Length + PacketIdentifier.EncodedSize).ToArray()
                 };
             }
+        }
+    }
+
+    /// <summary>
+    /// Various information about the client who sent a given packet
+    /// </summary>
+    public class PacketSourceInfo
+    {
+        /// <summary>
+        /// The <see cref="NetIdentity"/> of the client
+        /// </summary>
+        public NetIdentity Identity { get; internal set; }
+
+        /// <summary>
+        /// The <see cref="Steamworks.Data.Connection"/> that sent the packet.
+        /// </summary>
+        public Connection Connection { get; internal set; }
+
+        /// <summary>
+        /// The <see cref="SteamSocket"/> that the packet was received on.
+        /// </summary>
+        public SteamSocket Socket { get; internal set; }
+
+        /// <summary>
+        /// The Steam account that the client is using.
+        /// </summary>
+        public Friend Friend { get; internal set; }
+
+        /// <summary>
+        /// The Steam name of the client.
+        /// </summary>
+        public string SteamName => Friend.Name;
+
+        /// <summary>
+        /// The <see cref="SteamId"/> of the client
+        /// </summary>
+        public SteamId SenderSteamId => Identity.SteamId;
+
+        private Player player;
+
+        /// <summary>
+        /// The <see cref="global::Player"/> object that the client controls
+        /// </summary>
+        public Player Player
+        {
+            get {
+                if (player == null)
+                {
+                    player = PlayerHandler.Get().PlayerList().Find(x => x.steamId == SenderSteamId);
+                }
+                return player; 
+            }
+        }
+        internal PacketSourceInfo(NetIdentity identity, Connection connection, SteamSocket socket, Friend friend)
+        {
+            Identity = identity;
+            Connection = connection;
+            Socket = socket;
+            Friend = friend;
+            player = null;
         }
     }
 }

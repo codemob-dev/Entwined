@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using BoplFixedMath;
 using System.Text;
 
 namespace Entwined
@@ -75,5 +74,14 @@ namespace Entwined
         public bool Detwine(byte[] data) => BitConverter.ToBoolean(data, 0);
 
         public byte[] Entwine(bool obj) => BitConverter.GetBytes(obj);
+    }
+    /// <summary>
+    /// An implementation of <see cref="IEntwiner"/> for <see cref="Fix">.
+    /// </summary>
+    public class FixEntwiner : IEntwiner<Fix>
+    {
+        public Fix Detwine(byte[] data) => Fix.FromRaw(BitConverter.ToInt64(data, 0));
+
+        public byte[] Entwine(Fix obj) => BitConverter.GetBytes(obj.m_rawValue);
     }
 }
