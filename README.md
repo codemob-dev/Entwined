@@ -24,9 +24,9 @@ internal class MyPlugin : MonoBehaviour
         }
     }
 
-    private static void OnMessage(string payload)
+    private static void OnMessage(string payload, PacketSourceInfo sourceInfo)
     {
-        Logger.LogInfo(payload);
+        Logger.LogInfo($"{sourceInfo.SteamName}: {payload}");
     }
 }
 ```
@@ -43,12 +43,12 @@ private void Awake()
     helloWorldChannel.OnMessage += OnMessage;
 }
 ```
-This creates a new isolated channel that automatically encodes and decodes strings and adds the function `OnMessage`. This function is run whenever a client broadcasts a packet on the channel.
+This creates a new isolated channel that automatically encodes and decodes strings and adds the function `OnMessage`. This function is run whenever a client broadcasts a packet on the channel. `PacketSourceInfo` contains various information about the client who sent the message.
 
 ```c#
-private static void OnMessage(string payload)
+private static void OnMessage(string payload, PacketSourceInfo sourceInfo)
 {
-    Logger.LogInfo(payload);
+    Logger.LogInfo($"{sourceInfo.SteamName}: {payload}");
 }
 ```
 Because we passed `StringEntwiner` to our channel we do not need to decode a byte array, and can easily log the string to the console.
