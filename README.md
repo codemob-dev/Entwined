@@ -1,5 +1,5 @@
 # Entwined
-An advanced Bopl Battle networking library
+An advanced Bopl Battle networking library.
 
 ## How to use
 Instead of a big text wall on how everything works, there will be an example Hello World program to demonstrate the basic functionality.

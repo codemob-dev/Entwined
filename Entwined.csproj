@@ -439,5 +439,20 @@
     <Compile Include="MainTest.cs" />
     <Compile Include="SyncedVariable.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="mod-package\manifest.json" />
+    <None Include="mod-package\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="mod-package\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="mod-package\plugins\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties mod-package_4manifest_1json__JsonSchema="" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
