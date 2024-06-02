@@ -31,7 +31,7 @@ namespace Entwined
             PacketChannel.OnMessage += OnMessage;
         }
 
-        private void OnMessage(byte[] payload)
+        private void OnMessage(byte[] payload, PacketSourceInfo sourceInfo)
         {
             lock (internalValue)
             {

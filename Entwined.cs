@@ -189,60 +189,51 @@ namespace Entwined
     /// <summary>
     /// Various information about the client who sent a given packet
     /// </summary>
-    public class PacketSourceInfo
+    public struct PacketSourceInfo
     {
         /// <summary>
         /// The <see cref="NetIdentity"/> of the client
         /// </summary>
-        public NetIdentity Identity { get; internal set; }
+        public NetIdentity Identity;
 
         /// <summary>
         /// The <see cref="Steamworks.Data.Connection"/> that sent the packet.
         /// </summary>
-        public Connection Connection { get; internal set; }
+        public Connection Connection;
 
         /// <summary>
         /// The <see cref="SteamSocket"/> that the packet was received on.
         /// </summary>
-        public SteamSocket Socket { get; internal set; }
+        public SteamSocket Socket;
 
         /// <summary>
         /// The Steam account that the client is using.
         /// </summary>
-        public Friend Friend { get; internal set; }
+        public Friend Friend;
 
         /// <summary>
         /// The Steam name of the client.
         /// </summary>
-        public string SteamName => Friend.Name;
+        public string SteamName;
 
         /// <summary>
         /// The <see cref="SteamId"/> of the client
         /// </summary>
-        public SteamId SenderSteamId => Identity.SteamId;
-
-        private Player player;
+        public SteamId SenderSteamId;
 
         /// <summary>
         /// The <see cref="global::Player"/> object that the client controls
         /// </summary>
-        public Player Player
-        {
-            get {
-                if (player == null)
-                {
-                    player = PlayerHandler.Get().PlayerList().Find(x => x.steamId == SenderSteamId);
-                }
-                return player; 
-            }
-        }
+        public Player Player;
         internal PacketSourceInfo(NetIdentity identity, Connection connection, SteamSocket socket, Friend friend)
         {
             Identity = identity;
             Connection = connection;
             Socket = socket;
             Friend = friend;
-            player = null;
+            SenderSteamId = identity.SteamId;
+            Player = PlayerHandler.Get().PlayerList().Find(x => x.steamId == identity.SteamId);
+            SteamName = Friend.Name;
         }
     }
 }
