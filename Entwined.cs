@@ -64,8 +64,8 @@ namespace Entwined
             EntwinedUtilities.SteamManagerLoaded += SteamManagerLoaded;
 
             // Comment this out during production
-            var mainTest = new GameObject("EntwinedMainTest", typeof(MainTest));
-            DontDestroyOnLoad(mainTest);
+            // var mainTest = new GameObject("EntwinedMainTest", typeof(MainTest));
+            // DontDestroyOnLoad(mainTest);
         }
 
         /// <summary>
