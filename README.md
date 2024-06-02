@@ -26,7 +26,7 @@ internal class MyPlugin : MonoBehaviour
 
     private static void OnMessage(string payload, PacketSourceInfo sourceInfo)
     {
-        Logger.LogInfo($"{sourceInfo.SteamName}: {payload}");
+        Logger.LogInfo($"{sourceInfo.SenderSteamName}: {payload}");
     }
 }
 ```
@@ -48,7 +48,7 @@ This creates a new isolated channel that automatically encodes and decodes strin
 ```c#
 private static void OnMessage(string payload, PacketSourceInfo sourceInfo)
 {
-    Logger.LogInfo($"{sourceInfo.SteamName}: {payload}");
+    Logger.LogInfo($"{sourceInfo.SenderSteamName}: {payload}");
 }
 ```
 Because we passed `StringEntwiner` to our channel we do not need to decode a byte array, and can easily log the string to the console.

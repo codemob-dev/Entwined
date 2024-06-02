@@ -63,9 +63,11 @@ namespace Entwined
 
             EntwinedUtilities.SteamManagerLoaded += SteamManagerLoaded;
 
-            // Comment this out during production
+
+            // ----------------Comment this out during production------------------
             // var mainTest = new GameObject("EntwinedMainTest", typeof(MainTest));
             // DontDestroyOnLoad(mainTest);
+            // --------------------------------------------------------------------
         }
 
         /// <summary>
@@ -214,7 +216,7 @@ namespace Entwined
         /// <summary>
         /// The Steam name of the client.
         /// </summary>
-        public string SteamName;
+        public string SenderSteamName;
 
         /// <summary>
         /// The <see cref="SteamId"/> of the client
@@ -233,7 +235,7 @@ namespace Entwined
             Friend = friend;
             SenderSteamId = identity.SteamId;
             Player = PlayerHandler.Get().PlayerList().Find(x => x.steamId == identity.SteamId);
-            SteamName = Friend.Name;
+            SenderSteamName = Friend.Name;
         }
     }
 }

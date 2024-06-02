@@ -25,7 +25,7 @@ internal class MyPlugin : MonoBehaviour
 
     private static void OnMessage(string payload, PacketSourceInfo sourceInfo)
     {
-        Logger.LogInfo($"{sourceInfo.SteamName}: {payload}");
+        Logger.LogInfo($"{sourceInfo.SenderSteamName}: {payload}");
     }
 }
 ```

@@ -1,6 +1,6 @@
-﻿using System.Text;
+﻿using Steamworks;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Entwined.Tests
 {
@@ -14,7 +14,8 @@ namespace Entwined.Tests
             helloWorldChannel.OnMessage += OnMessage;
         }
 
-        string msg = "Hello World!";
+        static string msg = "Hello World!";
+        static List<string> messages = new List<string>();
         SyncedVariable<int> syncedVariable;
         private void OnGUI()
         {
@@ -22,6 +23,7 @@ namespace Entwined.Tests
             if (GUI.Button(new Rect(15, 170, 100, 40), "Send Message"))
             {
                 helloWorldChannel.SendMessage(msg);
+                AddMessage(msg, SteamClient.Name);
                 Entwined.StaticLogger.LogInfo("Sent message!");
             }
             GUI.contentColor = Color.black;
@@ -36,11 +38,19 @@ namespace Entwined.Tests
             {
                 syncedVariable.Value--;
             }
+            GUI.contentColor = Color.black;
+            GUI.Label(new Rect(15, 385, 1600, 1600), string.Join("\n", messages));
+            GUI.contentColor = Color.white;
         }
 
         private static void OnMessage(string payload, PacketSourceInfo sourceInfo)
         {
-            Entwined.StaticLogger.LogInfo($"{sourceInfo.SteamName}: {payload}");
+            AddMessage(payload, sourceInfo.SenderSteamName);
+        }
+        private static void AddMessage(string msg, string user)
+        {
+            messages.Insert(0, $"[{user}] {msg}");
+            if (messages.Count > 24) messages.RemoveAt(messages.Count - 1);
         }
     }
 }
